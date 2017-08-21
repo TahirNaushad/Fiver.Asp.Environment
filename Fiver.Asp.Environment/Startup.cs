@@ -11,23 +11,44 @@ namespace Fiver.Asp.Environment
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(
+            IServiceCollection services)
         {
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        //public void Configure(
+        //    IApplicationBuilder app, 
+        //    IHostingEnvironment env)
+        //{
+        //    if (env.IsEnvironment("Development"))
+        //        Run(app, "Development");
+        //    else if (env.IsEnvironment("Staging"))
+        //        Run(app, "Staging");
+        //    else if (env.IsEnvironment("Production"))
+        //        Run(app, "Production");
+        //    else
+        //        Run(app, env.EnvironmentName);
+        //}
+
+        public void Configure(
+            IApplicationBuilder app,
+            IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+                Run(app, "Development");
+            else if (env.IsStaging())
+                Run(app, "Staging");
+            else if (env.IsProduction())
+                Run(app, "Production");
+            else
+                Run(app, env.EnvironmentName);
+        }
 
-            app.Run(async (context) =>
+        private void Run(IApplicationBuilder app, string environmentName)
+        {
+            app.Run(async context =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                await context.Response.WriteAsync($"Hello {environmentName}");
             });
         }
     }
